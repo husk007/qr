@@ -1,0 +1,6 @@
+<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>QR</title><body style="font:16px sans-serif;padding:1em"><script>
+(async()=>{let h=location.hash.slice(1);if(!h){document.body.textContent='Brak gry w linku. Zeskanuj kod QR z grą.';return}
+try{let b=Uint8Array.from(atob(h.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
+let t=await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+document.open();document.write(t);document.close()}catch(e){document.body.textContent='Nie udało się uruchomić gry: '+e}})()
+</script>
