@@ -1,0 +1,46 @@
+<title>Ptak</title><body style=margin:0;overflow:hidden><canvas id=c></canvas><script>
+W=c.width=innerWidth;H=c.height=innerHeight;g=c.getContext('2d');M=Math;N=M.random;
+S=M.min(W,H)/20;best=0;A=0;fl=0;
+f=(r,b,l,a)=>g.fillStyle=`rgba(${r},${b},${l},${a||1})`;
+O=(x,y,r)=>{g.beginPath();g.arc(x,y,r,0,7);g.fill()};
+C=[...Array(6)].map((_,i)=>({x:N()*W,y:N()*H/2,r:S*(1+N()*1.5),k:.2+i*.1}));
+function snd(F,d,ty,F2){try{A=A||new AudioContext;o=A.createOscillator();G=A.createGain();n=A.currentTime;o.type=ty;
+o.frequency.setValueAtTime(F,n);F2&&o.frequency.exponentialRampToValueAtTime(F2,n+d);
+G.gain.setValueAtTime(.15,n);G.gain.exponentialRampToValueAtTime(.001,n+d);
+o.connect(G).connect(A.destination);o.start();o.stop(n+d)}catch(e){}}
+function R(){y=H/2;v=0;P=[];t=s=on=dead=nx=hx=0;sp=S*.12}R();
+function F(){if(dead){t>30&&R();return}on=1;v=-S*.42;snd(300,.15,'square',600)}
+onkeydown=e=>{e.key==' '|e.key=='ArrowUp'&&F()};
+addEventListener('touchstart',e=>{e.preventDefault();F()},{passive:false});onmousedown=F;
+function die(){dead=1;t=0;fl=8;snd(400,.5,'sawtooth',60);s>best&&(best=s)}
+function hill(k,h){g.beginPath();g.moveTo(0,H);
+for(i=0;i<=W+40;i+=40)g.lineTo(i,H-S-h-M.sin((i+hx*k)/S/3)*h/2);g.lineTo(W,H);g.fill()}
+function L(){requestAnimationFrame(L);t++;
+q=g.createLinearGradient(0,0,0,H);q.addColorStop(0,'rgb(70,150,230)');q.addColorStop(1,'rgb(180,230,250)');
+g.fillStyle=q;g.fillRect(0,0,W,H);f(255,255,255,.85);
+for(k of C){dead||(k.x-=sp*k.k);if(k.x<-k.r*3)k.x=W+k.r,k.y=N()*H/2;
+O(k.x,k.y,k.r);O(k.x+k.r,k.y+k.r*.2,k.r*.8);O(k.x-k.r,k.y+k.r*.3,k.r*.6)}
+dead||(hx+=sp);f(120,190,140);hill(.3,S*3);f(80,170,90);hill(.6,S*1.5);
+if(on&&!dead){v+=S*.025;y+=v;sp=S*(.12+s*.004);gap=S*M.max(4,5.5-s*.05);
+if(--nx<0){nx=S*16/sp;P.push({x:W,h:S*2+N()*(H-S*4-gap),g:gap})}
+for(p of P){p.x-=sp;
+if(p.x<W/4+S*.6&&p.x+S*2>W/4-S*.6&&(y-S*.6<p.h||y+S*.6>p.h+p.g))die();
+if(!p.p&&p.x+S*2<W/4){p.p=1;s++;snd(s/10==(s/10|0)?1320:880,.12,'triangle')}}
+P=P.filter(p=>p.x>-S*3);
+(y>H-S*1.6||y<0)&&die()}
+for(p of P){f(40,150,40);g.fillRect(p.x,0,S*2,p.h);g.fillRect(p.x,p.h+p.g,S*2,H);
+f(30,120,30);g.fillRect(p.x-S*.2,p.h-S*.8,S*2.4,S*.8);g.fillRect(p.x-S*.2,p.h+p.g,S*2.4,S*.8)}
+f(220,200,120);g.fillRect(0,H-S,W,S);
+g.save();g.translate(W/4,y);g.rotate(M.max(-.5,M.min(1.2,v/S/.6)));
+f(255,215,0);O(0,0,S*.6);
+f(240,170,0);g.beginPath();g.ellipse(-S*.15,S*.1,S*.3,S*.18,M.sin(t/3)*.6,0,7);g.fill();
+f(255,255,255);O(S*.25,-S*.2,S*.2);f(0,0,0);O(S*.3,-S*.2,S*.08);
+f(255,140,0);g.fillRect(S*.4,0,S*.5,S*.25);g.restore();
+fl>0&&(f(255,255,255,fl--/10),g.fillRect(0,0,W,H));
+f(255,255,255);g.lineWidth=S*.12;g.textAlign='center';
+T=(x,z,e)=>{g.font='bold '+e*S+'px sans-serif';g.strokeText(x,W/2,z);g.fillText(x,W/2,z)};
+T(s,S*2.5,1.5);
+on||T('Stuknij / Spacja',H/2+S*3,.8);
+if(dead){T(s>=best&&s?'NOWY REKORD!':'Koniec gry',H/2-S*1.5,1);T('Rekord: '+best,H/2,.8);t>30&&T('Stuknij, by zagra\u0107',H/2+S*1.5,.7)}}
+L()
+</script>

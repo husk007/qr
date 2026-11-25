@@ -1,0 +1,56 @@
+<title>Hop</title><meta name=viewport content=width=device-width,user-scalable=no><body style=margin:0;overflow:hidden><canvas id=c></canvas><script>
+W=c.width=innerWidth;H=c.height=innerHeight;g=c.getContext('2d');M=Math;F=M.floor;T=M.min(H/15,W/12);CW=W/T;LW=150;t=A=0;
+f=(r,b,l,a=1)=>g.fillStyle=`rgba(${r},${b},${l},${a})`;B=(x,y,w,h)=>g.fillRect(x*T,y*T,w*T,h*T);
+O=(x,y,a,b=a)=>{g.beginPath();g.ellipse(x*T,y*T,a*T,b*T,0,0,7);g.fill()};
+X=(s,x,y,e)=>{g.font='bold '+e*T+'px arial';g.fillText(s,x*T,y*T)};
+snd=(p,d,q=p)=>{try{A=A||new AudioContext;o=A.createOscillator();G=A.createGain();n=A.currentTime;
+o.frequency.setValueAtTime(p,n);o.frequency.exponentialRampToValueAtTime(q,n+d);G.gain.setValueAtTime(.1,n);G.gain.exponentialRampToValueAtTime(.001,n+d);
+o.connect(G).connect(A.destination);o.start();o.stop(n+d)}catch(e){}};
+R=(y,x,j,w=1,h=1)=>{for(let a=0;a<w;a++)for(let b=0;b<h;b++)m[(j+b)*LW+x+a]=y};
+function lv(){m=Array(LW*15).fill(0);
+[[0,60],[63,80],[84,112],[115,149]].map(a=>R(1,a[0],13,a[1]-a[0]+1,2));
+[[3,16,9],[2,20,9,5],[3,21,9],[3,23,9],[3,22,5],[1,28,11,2,2],[1,38,10,2,3],[1,46,9,2,4],[1,55,9,2,4],[2,68,9,3],[3,71,9],[2,72,5,7],
+[3,90,9],[3,93,9],[3,96,9],[3,93,5],[2,102,9,2],[4,40,7,2],[4,58,10,3],[4,74,3,4],[4,118,7,3]].map(a=>R(...a));
+for(i=0;i<4;i++)R(1,116+i,12-i,1,i+1),R(1,123-i,12-i,1,i+1);for(i=0;i<8;i++)R(1,128+i,12-i,1,i+1);
+E=[22,40,50,52,66,75,88,90,100,104,110,126].map(x=>({x,y:12,w:.9,h:.9,vx:-.03,vy:0}));
+P={x:2,y:12,w:.7,h:.95,vx:0,vy:0,d:1};cx=st=sc=0}lv();
+k={};onkeydown=e=>{k[e.key]=1;A||snd(1,.01)};onkeyup=e=>k[e.key]=0;
+tc=e=>{e.preventDefault();k.l=k.r=k.u=0;for(q of e.touches){x=q.clientX/W;x<.17?k.l=1:x<.34?k.r=1:k.u=1}A||snd(1,.01)};
+['touchstart','touchmove','touchend'].map(n=>addEventListener(n,tc,{passive:0}));
+S=(x,y)=>x<0||x>=LW?1:y<0||y>14?0:[0,1,1,1,0,0,0,1][m[y*LW+x]];
+hit=o=>{for(a=F(o.x);a<=F(o.x+o.w-.01);a++)for(b=F(o.y);b<=F(o.y+o.h-.01);b++)if(S(a,b))return 1};
+function mv(o){o.g=o.wl=o.hd=0;o.x+=o.vx;if(hit(o))o.x=o.vx>0?F(o.x+o.w-.01)-o.w:F(o.x)+1,o.wl=1;
+o.vy=M.min(o.vy+(o.j?.015:.025),.45);o.y+=o.vy;
+if(hit(o)){o.vy>0?(o.y=F(o.y+o.h-.01)-o.h,o.g=1):(o.y=F(o.y)+1,o.hd=1);o.vy=0}}
+die=()=>{st=1;t0=t;P.vy=-.4;snd(500,.8,60)};
+function up(){U=k.ArrowUp||k[' ']||k.u;
+if(st>1)return U&&t-t0>60&&lv();
+if(st)return P.vy+=.02,P.y+=P.vy,t-t0>90&&lv();
+a=(k.ArrowRight||k.r?1:0)-(k.ArrowLeft||k.l?1:0);P.vx=a?M.max(-.14,M.min(.14,P.vx+a*.012)):P.vx*.8;a&&(P.d=a);
+U&&P.g&&!P.jh&&(P.vy=-.36,snd(300,.2,700));P.jh=U;P.j=U&&P.vy<0;
+mv(P);P.wl&&(P.vx=0);P.x<cx&&(P.x=cx);
+if(P.hd){q=(F(P.y)-1)*LW+F(P.x+P.w/2);m[q]==3?(m[q]=7,sc+=100,snd(990,.3,1980)):m[q]==2?(m[q]=0,sc+=50,snd(200,.15,80)):0}
+for(a=F(P.x);a<=F(P.x+P.w);a++)for(b=F(P.y);b<=F(P.y+P.h);b++)m[q=b*LW+a]==4&&(m[q]=0,sc+=100,snd(990,.25,1980));
+for(e of E){if(e.d||e.x>cx+CW+2)continue;mv(e);e.wl&&(e.vx*=-1);
+if(P.x<e.x+e.w&&P.x+P.w>e.x&&P.y<e.y+e.h&&P.y+P.h>e.y)
+if(P.vy>0&&P.y+P.h-e.y<.6)e.d=1,P.vy=-.25,sc+=200,snd(400,.15,100);else return die()}
+P.y>15&&die();cx=M.max(cx,M.min(P.x-CW*.4,LW-CW));
+if(P.x+P.w>143)st=2,t0=t,snd(400,1,1600)}
+function L(){requestAnimationFrame(L);t++;up();
+f(110,180,250);B(0,0,CW,15);f(150,90,45);B(0,15,CW,H);
+for(i=F(cx);i<cx+CW+1&&i<LW;i++)for(j=0;j<15;j++){q=m[j*LW+i];x=i-cx;
+q==1&&(f(150,90,45),B(x,j,1,1),S(i,j-1)||(f(80,180,60),B(x,j,1,.25)));
+q==2&&(f(195,95,45),B(x,j,1,1),f(110,50,25),B(x,j+.45,1,.1));
+q==3&&(f(240,190,50),B(x,j,1,1),f(220,40,40),B(x+.4,j,.2,1));
+q==7&&(f(140,120,100),B(x,j,1,1));
+q==4&&(f(255,210,0),O(x+.5,j+.5,.25,.4))}
+x=143-cx;f(230,230,230);B(x+.45,4,.1,9);f(230,30,40);B(x-.8,4.2,1.25,.8);
+for(e of E)e.d||(x=e.x-cx,f(140,60,180),O(x+.45,e.y+.55,.48,.45),f(255,255,255),O(x+.28,e.y+.45,.12),O(x+.62,e.y+.45,.12));
+x=P.x-cx;y=P.y;w=P.g&&M.abs(P.vx)>.02?M.sin(t/3)*.15:0;
+f(40,50,90);B(x+.1+w,y+.6,.2,.35);B(x+.4-w,y+.6,.2,.35);f(0,165,160);B(x+.05,y+.32,.6,.34);
+f(255,205,160);O(x+.35,y+.2,.2);f(0,0,0);O(x+.35+P.d*.1,y+.2,.04);
+f(255,255,255);g.textAlign='center';X(sc,CW/2,.9,.7);
+st>1&&(X('META!',CW/2,6,1.5));
+'ontouchstart'in window&&(f(255,255,255,.3),O(CW*.08,H/T-1.6,.9),O(CW*.25,H/T-1.6,.9),O(CW*.85,H/T-1.6,1.1))}
+L()
+</script>

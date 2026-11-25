@@ -1,0 +1,38 @@
+<title>APM Memory</title><meta name=viewport content=width=device-width,user-scalable=no><style>
+body{margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(rgb(190,215,230),rgb(230,235,235) 70%,rgb(110,160,80) 70%);font-family:sans-serif;overflow:hidden;user-select:none}
+#w{width:min(94vw,80vh)}
+#r{height:3vmin;background:rgb(240,240,238);border-radius:.5vmin;position:relative;box-shadow:0 .6vmin .8vmin rgba(0,0,0,.25)}
+#r:before{content:'';position:absolute;left:30%;width:40%;top:-3vmin;height:3vmin;background:rgba(230,240,245,.9);border:.3vmin solid rgb(190,190,190);box-sizing:border-box}
+#g{display:grid;grid-template-columns:repeat(5,1fr);gap:.4vmin;padding:.8vmin;background:rgb(200,200,196);position:relative;overflow:hidden}
+.d{aspect-ratio:1/.8;background:rgb(234,234,229);border-radius:.3vmin;display:flex;align-items:center;justify-content:center;font-size:min(7vw,6vh);cursor:pointer;transition:.3s;box-shadow:inset 0 -.4vmin rgba(0,0,0,.07)}
+.d span{opacity:0;transform:scale(.2);transition:.3s}
+.o{background:rgb(65,65,70)}.o span,.m span{opacity:1;transform:none}
+.m{background:rgb(255,225,225);box-shadow:inset 0 0 0 .5vmin rgb(227,6,19)}
+#l{grid-area:1/1/3;background:rgb(234,234,229);display:flex;align-items:center;justify-content:center}
+#l p{margin:0;transform:rotate(-7deg);display:flex;flex-direction:column;align-items:center}#l div{width:85%;aspect-ratio:1;background:rgb(227,6,19);transform:rotate(7deg);border-radius:.6vmin;color:white;font-weight:bold;display:flex;align-items:center;justify-content:center;font-size:min(3.6vw,3.1vh);line-height:1.1}
+#s{grid-area:3/3/5;background:rgb(228,228,224);display:flex;align-items:center;justify-content:center;cursor:pointer}
+#t{width:90%;height:86%;background:rgb(35,40,55);border:.6vmin solid rgb(150,150,150);color:white;font-size:min(2.6vw,2.1vh);text-align:center;display:flex;flex-direction:column;justify-content:center;line-height:1.4}
+.q{position:absolute;border:1vmin solid;border-radius:2vmin;pointer-events:none;opacity:.75}
+#b{height:5vmin;background:rgb(70,70,72)}#p{height:2vmin;background:rgb(185,185,180);margin:0 -3vmin}
+</style><div id=w><div id=r></div><div id=g><div id=l><div><p>ORLEN<span style=font-weight:normal>paczka</span></p></div></div><div id=s><div id=t></div></div>
+<div class=q style="color:rgb(60,60,65);left:42%;top:73%;width:21%;height:40%;transform:rotate(6deg)"></div>
+<div class=q style="color:rgb(227,6,19);left:58%;top:50%;width:33%;height:65%;transform:rotate(8deg)"></div></div><div id=b></div><div id=p></div></div><script>
+E=[...'📦🚚🏠⛽🎁📬🔑🧸⚽🎮📱🍕🌻'];A=0;best=0;try{best=localStorage.mem|0}catch(e){}
+function snd(F,d,ty,F2){try{A=A||new AudioContext;o=A.createOscillator();G=A.createGain();n=A.currentTime;o.type=ty;
+o.frequency.setValueAtTime(F,n);F2&&o.frequency.exponentialRampToValueAtTime(F2,n+d);
+G.gain.setValueAtTime(.15,n);G.gain.exponentialRampToValueAtTime(.001,n+d);
+o.connect(G).connect(A.destination);o.start();o.stop(n+d)}catch(e){}}
+function U(){t.innerHTML=pr<13?`<b>Odbiór</b>Ruchy: ${mv}<br>Pary: ${pr}/13<br>Czas: ${sec}s`:
+`<b>Brawo!</b>Wszystko odebrane<br>${mv} ruchów, ${sec}s<br>Rekord: ${best}<br><small>Stuknij: nowa gra</small>`}
+function N(){document.querySelectorAll('.d').forEach(e=>e.remove());
+D=[...E,...E].sort(()=>Math.random()-.5);mv=pr=sec=lk=0;op=[];
+D.forEach(x=>{let d=document.createElement('div');d.className='d';d.innerHTML=`<span>${x}</span>`;d.x=x;d.onclick=()=>F(d);g.append(d)});U()}
+function F(d){if(lk||d.className!='d')return;d.className='d o';op.push(d);snd(500,.08,'square',300);
+if(op.length<2)return;mv++;[a,b]=op;op=[];
+if(a.x==b.x){a.className=b.className='d m';pr++;setTimeout(()=>snd(660,.3,'triangle',1320),150);
+if(pr>12){best=best&&best<mv?best:mv;try{localStorage.mem=best}catch(e){}
+[523,659,784,1047].map((f,i)=>setTimeout(()=>snd(f,.3,'triangle'),300+i*150))}}
+else{lk=1;setTimeout(()=>{a.className=b.className='d';lk=0;snd(250,.1,'square',150)},900)}U()}
+s.onclick=()=>pr>12&&N();
+setInterval(()=>{if(pr<13&&mv){sec++;U()}},1e3);N()
+</script>
