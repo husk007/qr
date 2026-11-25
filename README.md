@@ -10,6 +10,7 @@ Gry HTML, z których każda mieści się w całości w jednym kodzie QR. Skanuje
 | [Kurier ORLEN Paczka](gry/kurier) | Bus kurierski, paczki, automaty APM i paliwo | 2848 znaków, QR v40 |
 | [Memory APM](gry/memory-apm) | Gra w pary w automacie paczkowym | 2570 znaków, QR v38 |
 | [Hop!](gry/hop) | Platformówka z jedną pełną planszą | 2949 znaków, QR v40 |
+| [QR Linux](gry/qr-linux) | Udawany terminal Linuksa z poleceniami i mini-grą | 2937 znaków, QR v40 |
 
 Każdy folder w `gry/` zawiera kod gry (`gra.html`), kod QR (`qr.png`), link (`link.txt`) i opis (`README.md`).
 

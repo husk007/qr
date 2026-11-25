@@ -1,0 +1,33 @@
+<title>QR Linux</title><meta name=viewport content=width=device-width><body style="margin:0;background:#000;color:#3e3;font:16px/1.35 monospace" onclick=i.focus()><div id=o style="padding:8px 8px 0;white-space:pre-wrap;word-break:break-all"></div><div id=l style="padding:0 8px 40vh;display:none"><span id=p></span><input id=i autocapitalize=off autocomplete=off spellcheck=false style="background:0;border:0;outline:0;color:#3e3;font:inherit;width:60%"></div><script>
+F={bin:{},etc:{hostname:'qr','os-release':'NAME="QR Linux"\nVERSION="1.0"\nROZMIAR="mniej niż 3 KB"'},home:{user:{'readme.txt':'Ten system mieści się w jednym kodzie QR.\nWpisz help, żeby zobaczyć polecenia.','notatki.txt':'- kupić mleko\n- znaleźć ukryty plik\n- zagrać: gra','.sekret':'Brawo, znalazłeś ukryty plik! Hasło: PINGWIN'}},tmp:{}};
+D=['home','user'];H=[];hi=0;T0=Date.now();G=0;
+w=s=>{o.append(s+'\n');scrollTo(0,1e9)};
+P=()=>'/'+D.join('/');Q=()=>p.textContent='user@qr:'+P().replace('/home/user','~')+'$ ';
+R=s=>{let a=s[0]=='/'?[]:s[0]=='~'?['home','user']:[...D];for(x of s.replace(/^~/,'').split('/'))x=='..'?a.pop():x&&x!='.'&&a.push(x);return a};
+N=a=>a.reduce((n,x)=>n&&typeof n=='object'?n[x]:void 0,F);
+E=(c,f)=>w(c+': '+f+': Nie ma takiego pliku ani katalogu');
+C={help:()=>w('Polecenia: '+Object.keys(C).join(' ')),
+ls:a=>{let f=a.filter(x=>x[0]!='-'),n=N(R(f[0]||'.'));n==null?E('ls',f[0]):typeof n=='string'?w(f[0]):w(Object.keys(n).filter(k=>a.includes('-a')||k[0]!='.').map(k=>typeof n[k]=='object'?k+'/':k).join('  '))},
+cd:a=>{let r=R(a[0]||'~');typeof N(r)=='object'?D=r:E('cd',a[0])},
+pwd:()=>w(P()),
+cat:a=>{let n=N(R(a[0]||''));typeof n=='string'?w(n):n?w('cat: '+a[0]+': Jest katalogiem'):E('cat',a[0])},
+echo:a=>w(a.join(' ')),
+rm:a=>w(a.includes('/')?'Spokojnie, to tylko kod QR ;)':'rm: odmowa dostępu'),
+clear:()=>o.textContent='',
+uname:()=>w('Linux qr 6.12.0-qr riscv64'),
+whoami:()=>w('user'),
+date:()=>w(new Date().toLocaleString('pl')),
+uptime:()=>w('działa od '+((Date.now()-T0)/1e3|0)+' s, 1 użytkownik'),
+neofetch:()=>w(`    .--.      user@qr\n   |o_o |     OS: QR Linux 1.0\n   |:_/ |     Kernel: 6.12.0-qr\n  //   \\ \\    Uptime: ${(Date.now()-T0)/1e3|0} s\n (|     | )   Shell: qsh\n/'\\_   _/\`\\   Dysk: 2953 B\n\\___)=(___/`),
+sudo:()=>w('user nie występuje w pliku sudoers. Ten incydent zostanie zgłoszony.'),
+gra:()=>{G=1+Math.random()*100|0;gt=0;w('Zgadnij liczbę od 1 do 100 (q = koniec)')},
+reboot:()=>B(),exit:()=>B()};
+function X(s){w(p.textContent+s);s=s.trim();if(!s)return;H.push(s);hi=H.length;
+if(G){if(s=='q')return G=0;gt++;return w(+s<G?'Za mało':+s>G?'Za dużo':(G=0,'Trafione w '+gt+' próbach!'))}
+let[c,...a]=s.split(/\s+/);C[c]?C[c](a):w('qsh: nie znaleziono polecenia: '+c)}
+i.onkeydown=e=>{let k=e.key;if(k=='Enter'){X(i.value);i.value='';Q()}
+else if(k=='ArrowUp'||k=='ArrowDown'){hi=Math.max(0,Math.min(H.length,hi+(k=='ArrowUp'?-1:1)));i.value=H[hi]||'';e.preventDefault()}
+else if(k=='Tab'){e.preventDefault();let a=i.value.split(' '),t=a.pop(),d=t.lastIndexOf('/')+1,n=a.length?N(R(t.slice(0,d)||'.')):C,m=Object.keys(n||{}).filter(x=>x.startsWith(t.slice(d)));m.length==1?i.value=[...a,t.slice(0,d)+m[0]].join(' '):m.length&&w(m.join('  '))}};
+B=()=>{l.style.display='none';o.textContent='';D=['home','user'];let L=['[    0.000000] Linux version 6.12.0-qr (gcc 14.2) #1 SMP','[    0.000000] Machine model: QR Code v40 (177x177)','[    0.004211] Memory: 2953B available','[    0.104225] usb 1-1: new high-speed USB device: Aparat telefonu','[    0.312000] Run /sbin/init as init process','\nQR Linux 1.0 qr tty1\n','qr login: user','Password: ','Ostatnie logowanie: '+new Date().toLocaleString('pl'),'\nWitaj w QR Linux! Wpisz help, żeby zobaczyć polecenia.\n'],j=0;
+(f=()=>{w(L[j++]);j<L.length?setTimeout(f,40+Math.random()*200):(l.style.display='',Q(),i.focus())})()};B()
+</script>
