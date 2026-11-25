@@ -1,0 +1,24 @@
+<title>CHIP-8 w QR</title><meta name=viewport content=width=device-width,user-scalable=no><body style="margin:0;background:#111;color:#ccc;font:14px sans-serif;text-align:center;user-select:none"><h3 style=margin:8px>CHIP-8 w kodzie QR</h3><canvas id=c width=64 height=32 style="width:min(96vw,640px);image-rendering:pixelated;border:2px solid #444"></canvas><p>Łapacz paczek (213 bajtów kodu maszynowego): łap paczki koszem klawiszami 4 i 6 (strzałki ← →). Lewy róg: punkty, prawy: życia. Po przegranej dowolny klawisz.</p><div id=k style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:min(80vw,320px);margin:auto"></div><p><label>Inny program: <input type=file id=f></label></p><script>
+X=c.getContext('2d');Z=X.createImageData(64,32);P='1234qwerasdfzxcv';Q=[1,2,3,12,4,5,6,13,7,8,9,14,10,0,11,15];K={};A=0;
+h=s=>s.match(/../g).map(x=>parseInt(x,16));
+function L(r){m=new Uint8Array(4096);m.set(h('f0909090f02060202070f010f080f0f010f010f09090f01010f080f010f0f080f090f0f010204040f090f090f0f090f010f0f090f09090e090e090e0f0808080f0e0909090e0f080f080f0f080f08080'));m.set(r,512);
+V=new Uint8Array(16);S=[];I=0;p=512;T=U=0;d=new Uint8Array(2048)}
+L(h('00e063006403681c661c6b046c006d0122b0229ea2ccd862f507350012186501f5156504e5a1227e6506e5a1228e7dff3d0012188db0a2ced9a47a01d9a43a181218d9a4859075038585670a87553f01126c22b0730122b06503f5187c013c0512686c003b017bff229e121822b074ff22b06514f51834001268f50a12003800128400eea2ccd86278ffd86200ee3838129400eea2ccd8627801d86200eec93f653b85953f01693b6a07a2ced9a400eea2d2f333f26567016e01f129de756e06f229de756e3bf429de7500ee81fff0b0d0f0000000'));
+function st(){let o=m[p]<<8|m[p+1],x=o>>8&15,y=o>>4&15,n=o&15,N=o&255,a=V[x],b=V[y];p+=2;
+switch(o>>12){case 0:o==224?d.fill(0):o==238&&(p=S.pop());break;case 1:p=o&4095;break;case 2:S.push(p);p=o&4095;break;
+case 3:a==N&&(p+=2);break;case 4:a!=N&&(p+=2);break;case 5:a==b&&(p+=2);break;case 6:V[x]=N;break;case 7:V[x]+=N;break;
+case 8:[()=>V[x]=b,()=>V[x]|=b,()=>V[x]&=b,()=>V[x]^=b,()=>{V[x]=a+b;V[15]=a+b>255},()=>{V[x]=a-b;V[15]=a>=b},()=>{V[x]=a>>1;V[15]=a&1},()=>{V[x]=b-a;V[15]=b>=a},,,,,,,()=>{V[x]=a<<1;V[15]=a>>7}][n]();break;
+case 9:a!=b&&(p+=2);break;case 10:I=o&4095;break;case 11:p=(o&4095)+V[0];break;case 12:V[x]=Math.random()*256&N;break;
+case 13:V[15]=0;for(let r=0;r<n;r++)for(let j=0;j<8;j++)if(m[I+r]>>7-j&1){let q=(b+r&31)*64+(a+j&63);d[q]&&(V[15]=1);d[q]^=1}break;
+case 14:!K[a]==(N==161)&&(p+=2);break;
+case 15:if(N==7)V[x]=T;if(N==10){let k=Q.find(k=>K[k]);k==null?p-=2:V[x]=k}if(N==21)T=a;if(N==24)U=a;if(N==30)I+=a;if(N==41)I=a*5;
+if(N==51)m[I]=a/100,m[I+1]=a/10%10,m[I+2]=a%10;if(N==85)for(let i=0;i<=x;i++)m[I+i]=V[i];if(N==101)for(let i=0;i<=x;i++)V[i]=m[I+i]}}
+function B(){try{A=A||new AudioContext;A.resume();if(!O){O=A.createOscillator();G=A.createGain();O.type='square';O.frequency.value=440;G.gain.value=0;O.connect(G).connect(A.destination);O.start()}}catch(e){}}O=0;
+(F=()=>{requestAnimationFrame(F);for(let i=0;i<12;i++)st();T&&T--;U&&U--;O&&(G.gain.value=U?.08:0);
+for(let i=0;i<2048;i++)Z.data.set(d[i]?[255,176,0,255]:[20,20,20,255],i*4);X.putImageData(Z,0,0)})();
+Q.map(v=>{let e=document.createElement('button');e.textContent=v.toString(16).toUpperCase();e.style.cssText='padding:14px;font:bold 18px monospace;border-radius:8px;border:0;background:'+(v==4||v==6?'#e30613;color:#fff':'#333;color:#ccc');
+e.onpointerdown=z=>{K[v]=1;B();z.preventDefault()};e.onpointerup=e.onpointerleave=()=>K[v]=0;k.append(e)});
+onkeydown=e=>{let i=P.indexOf(e.key.toLowerCase());i>=0&&(K[Q[i]]=1);e.key=='ArrowLeft'&&(K[4]=1);e.key=='ArrowRight'&&(K[6]=1);B()};
+onkeyup=e=>{let i=P.indexOf(e.key.toLowerCase());i>=0&&(K[Q[i]]=0);e.key=='ArrowLeft'&&(K[4]=0);e.key=='ArrowRight'&&(K[6]=0)};
+f.onchange=async()=>L(new Uint8Array(await f.files[0].arrayBuffer()))
+</script>
